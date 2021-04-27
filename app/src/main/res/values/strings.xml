@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Concentration</string>
+    <string name="title">Concentration</string>
+    <string name="playButton">Start</string>
+    <string name="difficultyText">Difficulty:</string>
+    <string name="difficultySpinner">Select here</string>
+    <string name="tryAgainButton">Try Again</string>
+    <string name="newGameButton">New Game</string>
+    <string name="endGameButton">End Game</string>
 </resources>
