@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Concentration</string>
     <string name="title">Concentration</string>
-    <string name="playButton">Start</string>
+    <string name="playButton">Play</string>
     <string name="difficultyText">Difficulty:</string>
     <string name="difficultySpinner">Select here</string>
     <string name="tryAgainButton">Try Again</string>
