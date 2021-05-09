@@ -7,4 +7,5 @@
     <string name="tryAgainButton">Try Again</string>
     <string name="newGameButton">New Game</string>
     <string name="endGameButton">End Game</string>
+    <string name="currentDifficultyText">"Difficulty: "</string>
 </resources>

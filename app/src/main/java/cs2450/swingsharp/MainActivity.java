@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Spinner code
         String[] arraySpinner = new String[] {
-                "2 Cards", "4 Cards", "6 Cards", "8 Cards", "10 Cards",
+                "4 Cards", "6 Cards", "8 Cards", "10 Cards",
                 "12 Cards", "14 Cards", "16 Cards", "18 Cards", "20 Cards"};
         Spinner s = (Spinner) findViewById(R.id.difficultySpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arraySpinner);
