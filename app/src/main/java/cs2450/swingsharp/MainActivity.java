@@ -2,17 +2,27 @@ package cs2450.swingsharp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    boolean musicOn = false;
+    MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +59,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Music button code (turn music on/off)
+        Button musicButton = findViewById(R.id.musicButton);
+        //AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 20, 0);
+        musicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!musicOn) {
+                    if(mediaPlayer == null) {
+                        mediaPlayer =  MediaPlayer.create(MainActivity.this, R.raw.suspect);
+                        mediaPlayer.setLooping(true);
+                        mediaPlayer.start();
+                        musicOn = true;
+                        musicButton.setText("Music: On");
+                        Toast.makeText(MainActivity.this, "Music is now on", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    mediaPlayer.pause();
+                    mediaPlayer = null;
+                    musicOn = false;
+                    musicButton.setText("Music: Off");
+                    Toast.makeText(MainActivity.this, "Music is now off", Toast.LENGTH_SHORT).show();
+                }
 
+            }
+        });
 
 
     }
+
     //Create cards based on the difficulty
     private int getDifficulty(){
         Spinner s = (Spinner) findViewById(R.id.difficultySpinner);
