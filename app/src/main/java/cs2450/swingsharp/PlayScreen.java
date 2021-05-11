@@ -90,6 +90,7 @@ public class PlayScreen extends AppCompatActivity {
                         //send to highscores screen
                         saveScore(score, username);
                         dialog.cancel();
+                        finish();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -287,30 +288,30 @@ public class PlayScreen extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!secondCard){
-                    lastCard = button.getText().toString();
-                    button.setTextColor(Color.WHITE);
-                    button.setEnabled(false);
-                    secondCard = true;
-                    incorrectPair[0] = button;
-                }
-                else{
-                    if(button.getText().toString().equals(lastCard)){
+                if(button.getCurrentTextColor() == Color.TRANSPARENT) {
+                    if (!secondCard) {
+                        lastCard = button.getText().toString();
                         button.setTextColor(Color.WHITE);
                         button.setEnabled(false);
-                        addScore(2);
-                        incorrectPair = new Button[2];
-                    }
-                    else{
-                        button.setTextColor(Color.WHITE);
-                        for(int j = 0; j < cards.length; j++){
-                            cards[j].setEnabled(false);
+                        secondCard = true;
+                        incorrectPair[0] = button;
+                    } else {
+                        if (button.getText().toString().equals(lastCard)) {
+                            button.setTextColor(Color.WHITE);
+                            button.setEnabled(false);
+                            addScore(2);
+                            incorrectPair = new Button[2];
+                        } else {
+                            button.setTextColor(Color.WHITE);
+                            for (int j = 0; j < cards.length; j++) {
+                                cards[j].setEnabled(false);
+                            }
+                            addScore(-1);
+                            incorrectPair[1] = button;
+                            wrongPair = true;
                         }
-                        addScore(-1);
-                        incorrectPair[1] = button;
-                        wrongPair = true;
+                        secondCard = false;
                     }
-                    secondCard = false;
                 }
 
             }
