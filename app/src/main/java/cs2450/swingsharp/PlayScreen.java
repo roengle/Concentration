@@ -85,6 +85,8 @@ public class PlayScreen extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         username = input.getText().toString();
+                        //send to highscores screen
+                        saveScore(score, username);
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -95,8 +97,6 @@ public class PlayScreen extends AppCompatActivity {
                 });
 
                 builder.show();
-                //send to highscores screen
-                saveScore(score, username);
             }
         });
 
