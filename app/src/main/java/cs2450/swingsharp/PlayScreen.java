@@ -1,13 +1,17 @@
 package cs2450.swingsharp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.TableRow;
@@ -25,6 +29,7 @@ public class PlayScreen extends AppCompatActivity {
     boolean secondCard = false;
     boolean wrongPair = false;
     String lastCard = "";
+    String username = "";
     int difficulty;
     Button[] cards;
     Button[] incorrectPair = new Button[2];
@@ -54,7 +59,33 @@ public class PlayScreen extends AppCompatActivity {
                 for(Button button : cards){
                     button.setTextColor(Color.WHITE);
                 }
+                //Prompt user to enter a name
+                AlertDialog.Builder builder = new AlertDialog.Builder(PlayScreen.this);
+                builder.setTitle("New Score! Please enter a name!");
+
+                // Set up the input
+                final EditText input = new EditText(PlayScreen.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        username = input.getText().toString();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
                 //send to highscores screen
+                saveScore(score, username);
             }
         });
 
@@ -233,6 +264,11 @@ public class PlayScreen extends AppCompatActivity {
         button.setTextColor(Color.TRANSPARENT);
     }
 
+
+    //Saves the score and name on game end
+    private void saveScore(int score, String name){
+        //
+    }
 
 
 
