@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -341,8 +342,8 @@ public class PlayScreen extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             //File doesn't exist, create file.
             FileOutputStream fos = null;
-            String baseText = "{\"4-scores\":[],\"6-scores\":[],\"8-scores\":[],\"10-scores\":[]," +
-                    "\"12-scores\":[],\"14-scores\":[],\"16-scores\":[],\"18-scores\":[],\"20-scores\":[]}";
+            String baseText = "{\"4-scores\":{},\"6-scores\":{},\"8-scores\":{},\"10-scores\":{}," +
+                    "\"12-scores\":{},\"14-scores\":{},\"16-scores\":{},\"18-scores\":{},\"20-scores\":{}}";
             try {
                 fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                 fos.write(baseText.getBytes());
@@ -380,16 +381,11 @@ public class PlayScreen extends AppCompatActivity {
         //Add current score to JSON object
         String query = String.format("%s-scores", this.difficulty);
         try {
-            jsonData.getJSONObject(String.format("%s-scores", difficulty)).put(username, score);
+            JSONObject scoreObject = jsonData.getJSONObject(String.format("%s-scores", difficulty));
+            scoreObject.put(username, score);
+            Log.d("new_json_entry", scoreObject.toString());
         } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //Remove all content from file
-        try {
-            PrintWriter pw = new PrintWriter(FILE_NAME);
-            pw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.d("json_exception", e.getMessage());
         }
         //Write JSON string to file
         FileOutputStream fos = null;
