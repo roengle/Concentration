@@ -87,6 +87,7 @@ public class PlayScreen extends AppCompatActivity {
                         username = input.getText().toString();
                         //send to highscores screen
                         saveScore(score, username);
+                        dialog.cancel();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Concentration">
         <activity android:name=".PlayScreen"></activity>
+        <activity android:name=".CreditsScreen"></activity>
+        <activity android:name=".HighScoresScreen"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
