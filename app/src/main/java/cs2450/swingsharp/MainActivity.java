@@ -65,6 +65,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Credits Button code (Switch screens)
+        Button creditsButton = findViewById(R.id.creditsButton);
+        creditsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent j = new Intent(getApplicationContext(), CreditsScreen.class);
+                startActivity(j); //opens credit screen
+            }
+        });
+
+        //High Scores Button code (Switch screens)
+        Button highScoresButton = findViewById(R.id.highScoresButton);
+        highScoresButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent j = new Intent(getApplicationContext(), HighScoresScreen.class);
+                startActivity(j); //opens credit screen
+            }
+        });
+
         //Music button code (turn music on/off)
         Button musicButton = findViewById(R.id.musicButton);
         //AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
