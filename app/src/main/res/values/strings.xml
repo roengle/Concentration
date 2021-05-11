@@ -10,4 +10,6 @@
     <string name="currentDifficultyText">"Difficulty: "</string>
     <string name="musicButton">Music: Off</string>
     <string name="scoreText">"Score: 0"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
