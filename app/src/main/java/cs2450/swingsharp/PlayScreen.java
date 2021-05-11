@@ -16,7 +16,18 @@ import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -265,11 +276,95 @@ public class PlayScreen extends AppCompatActivity {
     }
 
 
-    //Saves the score and name on game end
+    /**
+     * Saves the score with the associated username
+     *
+     * @param score the score the player has
+     * @param name the username of the player
+     */
     private void saveScore(int score, String name){
-        //
+        final String FILE_NAME = "highscores.json";
+        String input = null;
+        //Parse current JSON to get current scores.
+        FileInputStream fis = null;
+
+        //Read input from json file
+        try {
+            fis = openFileInput(FILE_NAME);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            input = br.readLine();
+        } catch (FileNotFoundException e) {
+            //File doesn't exist, create file.
+            FileOutputStream fos = null;
+            String baseText = "{\"4-scores\":[],\"6-scores\":[],\"8-scores\":[],\"10-scores\":[]," +
+                    "\"12-scores\":[],\"14-scores\":[],\"16-scores\":[],\"18-scores\":[],\"20-scores\":[]}";
+            try {
+                fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+                fos.write(baseText.getBytes());
+
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
+            } catch (FileNotFoundException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } finally{
+                try {
+                    fos.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally{
+            //Close input stream when done
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Create new JSONObject
+        JSONObject jsonData = null;
+        try {
+            jsonData = new JSONObject(input);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Add current score to JSON object
+        String query = String.format("%s-scores", this.difficulty);
+        try {
+            jsonData.getJSONObject(String.format("%s-scores", difficulty)).put(username, score);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Remove all content from file
+        try {
+            PrintWriter pw = new PrintWriter(FILE_NAME);
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        //Write JSON string to file
+        FileOutputStream fos = null;
+        try {
+            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            fos.write(jsonData.toString().getBytes());
+
+            Toast.makeText(this, "Saved to " + getFilesDir() + "/" + FILE_NAME,
+                    Toast.LENGTH_LONG).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally{
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
-
-
-
 }
