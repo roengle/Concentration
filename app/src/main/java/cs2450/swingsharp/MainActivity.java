@@ -25,14 +25,18 @@ public class MainActivity extends AppCompatActivity {
 
     boolean musicOn = false;
     MediaPlayer mediaPlayer;
+    // ADDED:
+    int position = 0;
+    //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //Spinner code
-        String[] arraySpinner = new String[] {
+        String[] arraySpinner = new String[]{
                 "4 Cards", "6 Cards", "8 Cards", "10 Cards",
                 "12 Cards", "14 Cards", "16 Cards", "18 Cards", "20 Cards"};
         Spinner s = (Spinner) findViewById(R.id.difficultySpinner);
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 Object item = parent.getItemAtPosition(pos);
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -54,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int difficulty = getDifficulty();
                 Intent i = new Intent(getApplicationContext(), PlayScreen.class);
-                i.putExtra("difficulty",difficulty);
+                i.putExtra("difficulty", difficulty);
                 startActivity(i);
                 //switchActivitiesWithData();
             }
@@ -67,18 +72,25 @@ public class MainActivity extends AppCompatActivity {
         musicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!musicOn) {
-                    if(mediaPlayer == null) {
-                        mediaPlayer =  MediaPlayer.create(MainActivity.this, R.raw.suspect);
+                if (!musicOn) {
+                    if (mediaPlayer == null) {
+                        mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.suspect);
                         mediaPlayer.setLooping(true);
                         mediaPlayer.start();
+                        //ADDED:
+                        mediaPlayer.seekTo(position);
+                        //
                         musicOn = true;
                         musicButton.setText("Music: On");
                         Toast.makeText(MainActivity.this, "Music is now on", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else {
+                } else {
                     mediaPlayer.pause();
+                    //ADDED:
+                    position = mediaPlayer.getCurrentPosition();
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    //
                     mediaPlayer = null;
                     musicOn = false;
                     musicButton.setText("Music: Off");
@@ -87,7 +99,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+          /*
+        if (savedInstanceState != null) {
+            if (mediaPlayer.isPlaying()) {
+                //mediaPlayer.start();
+                musicButton.setText("Music: On");
+                Toast.makeText(MainActivity.this, "Music is now on", Toast.LENGTH_SHORT).show();
 
+            }
+            else if (mediaPlayer.) {
+                //mediaPlayer.pause();
+                musicButton.setText("Music: Off");
+                Toast.makeText(MainActivity.this, "Music is now off", Toast.LENGTH_SHORT).show();
+            }
+        }
+         */
 
     }
 
@@ -113,6 +139,16 @@ public class MainActivity extends AppCompatActivity {
         switchActivityIntent.putExtra("message", "From: " + MainActivity.class.getSimpleName());
         startActivity(switchActivityIntent);
     }
+
+    /*
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean("music", musicOn);
+    }
+     */
+
 
 
 }

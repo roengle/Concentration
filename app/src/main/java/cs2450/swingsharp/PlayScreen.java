@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
@@ -147,12 +149,39 @@ public class PlayScreen extends AppCompatActivity {
             chosenWords[i+(difficulty/2)] = wordBank[i];
         }
 
-        //Creates an X amount of cards based on the array of words (max of 5rows x 4col)
+
         int tempNum;
+        int row1_start = 1;
+        int row1_end = 4;
+        int row2_start = 5;
+        int row2_end = 8;
+        int row3_start = 9;
+        int row3_end = 12;
+        int row4_start = 13;
+        int row4_end = 16;
+        int row5_start = 17;
+        int button_height = 260;
+        int button_width = 60;
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+            row1_start = 1;
+            row1_end = 5;
+            row2_start = 6;
+            row2_end = 10;
+            row3_start = 11;
+            row3_end = 15;
+            row4_start = 16;
+            row4_end = 20;
+            row5_start = 25;
+            button_height = 60;
+            button_width = 100;
+        }
+        //Creates an X amount of cards based on the array of words (max of 5rows x 4col)
         Button[] cards = new Button[difficulty];
         for(int i = 1; i <= difficulty; i++){
             //First row
-            if(i >= 1 && i <= 4) {
+            if(i >= row1_start && i <= row1_end) {
                 Button button = new Button(this);
                 String word=null;
                 while(word==null){
@@ -160,13 +189,18 @@ public class PlayScreen extends AppCompatActivity {
                     word = chosenWords[tempNum];
                     chosenWords[tempNum] = null;
                 }
+
                 button.setText(word);
+                //button.setHeight(button_height);
+                //button.setWidth(button_width);
+                //button.setBackgroundResource(R.drawable.hmm);
+
                 cards[i-1] = button;
                 createCardOnClick(button);
                 tablerow1.addView(button, tlp);
             }
             //Second row
-            if(i >= 5 && i <= 8){
+            if(i >= row2_start && i <= row2_end){
                 Button button = new Button(this);
                 String word=null;
                 while(word==null){
@@ -175,12 +209,14 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+               // button.setHeight(button_height);
+                //button.setWidth(button_width);
                 cards[i-1] = button;
                 createCardOnClick(button);
                 tablerow2.addView(button, tlp);
             }
             //Third row
-            if(i >= 9 && i <= 12){
+            if(i >= row3_start && i <= row3_end){
                 Button button = new Button(this);
                 String word=null;
                 while(word==null){
@@ -189,12 +225,14 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+              //  button.setHeight(button_height);
+              //  button.setWidth(button_width);
                 cards[i-1] = button;
                 createCardOnClick(button);
                 tablerow3.addView(button, tlp);
             }
             //Fourth row
-            if(i >= 13 && i <= 16){
+            if(i >= row4_start && i <= row4_end){
                 Button button = new Button(this);
                 String word=null;
                 while(word==null){
@@ -203,12 +241,14 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+             //   button.setHeight(button_height);
+             //   button.setWidth(button_width);
                 cards[i-1] = button;
                 createCardOnClick(button);
                 tablerow4.addView(button, tlp);
             }
             //Fifth row
-            if(i >= 17){
+            if(i >= row5_start){
                 Button button = new Button(this);
                 String word=null;
                 while(word==null){
@@ -217,6 +257,8 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+              //  button.setHeight(button_height);
+              //  button.setWidth(button_width);
                 cards[i-1] = button;
                 createCardOnClick(button);
                 tablerow5.addView(button, tlp);
