@@ -192,9 +192,7 @@ public class PlayScreen extends AppCompatActivity {
             Log.d("new-high-score", "New high score detected due to score being higher than one of top three.");
             newHighScoreInput();
         }else{
-            Log.d("no-new-high-score", "No new high score, attemping to return to main menu");
-            //If no new high score, return to main menu.
-            finish();
+            
         }
     }
 
