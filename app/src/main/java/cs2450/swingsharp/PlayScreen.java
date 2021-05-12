@@ -32,8 +32,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+
+import cs2450.swingsharp.util.NameScorePair;
 
 public class PlayScreen extends AppCompatActivity {
 
@@ -51,6 +56,7 @@ public class PlayScreen extends AppCompatActivity {
     String[] cardNames = new String[20];
     Button[] incorrectPair = new Button[2];
     int totalMatches=0;
+    final String FILE_NAME = "highscores.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +115,7 @@ public class PlayScreen extends AppCompatActivity {
                     checked[i]=true;
                 }
                 checkScore();
+
             }
         });
 
@@ -133,11 +140,56 @@ public class PlayScreen extends AppCompatActivity {
 
     }
 
-    //TODO: Checks if player's score is a new high score
+    //Checks if player's score is a new high score
     private void checkScore(){
-        //if new high score
-        if(true)
+        //Initialize objects to be setup later
+        FileInputStream fis = null;
+        String input = null;
+        //Setup our fileinput stream
+        try {
+            //Open file stream
+            fis = openFileInput(FILE_NAME);
+            //Create a new input stream reader and buffered reader
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            //File will only contain one line, so read only once.
+            input = br.readLine();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //Initialize JSON array that will contain individual JSON objects representing user-score pairs.
+        JSONArray scoreData = null;
+        //Initialize a list of NameScorePair that will be sorted to find the top 3
+        List<NameScorePair> nameScorePairs = new ArrayList<>();
+        try {
+            //Get the respective JSON array for our difficulty
+            scoreData = new JSONObject(input).getJSONArray(String.format("%s-scores", difficulty));
+            //Loop through each JSONObject in the JSONArray
+            for(int i = 0; i < scoreData.length(); i++){
+                //Get the JSONObject
+                JSONObject element = scoreData.getJSONObject(i);
+                //Create a new NameScorePair for the JSONObject
+                NameScorePair nameScorePair = new NameScorePair(element.getString("username"), element.getInt("score"));
+                //Add the name-score pair to the list
+                nameScorePairs.add(nameScorePair);
+            }
+        } catch (JSONException e) {
+            Log.d("json-error", e.getMessage());
+        }
+
+        //Sort the list by values(since it implements Comparable, it can be sorted)
+        Collections.sort(nameScorePairs);
+
+        if(nameScorePairs.size() == 1 || nameScorePairs.size() == 2 || nameScorePairs.size() == 0){
             newHighScoreInput();
+        }
+        else if(nameScorePairs.size() >= 3) {
+            if(score>nameScorePairs.get(0).getScore() || score>nameScorePairs.get(1).getScore() || score>nameScorePairs.get(2).getScore() )
+                newHighScoreInput();
+        }
+
 
     }
 
