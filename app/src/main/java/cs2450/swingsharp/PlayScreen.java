@@ -50,6 +50,7 @@ public class PlayScreen extends AppCompatActivity {
     boolean[] checked = new boolean[20];
     String[] cardNames = new String[20];
     Button[] incorrectPair = new Button[2];
+    int totalMatches=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,38 +101,14 @@ public class PlayScreen extends AppCompatActivity {
         endGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Reveals all cards
                 for(Button button : cards){
                     button.setTextColor(Color.WHITE);
                 }
-                //Prompt user to enter a name
-                AlertDialog.Builder builder = new AlertDialog.Builder(PlayScreen.this);
-                builder.setTitle("New Score! Please enter a name!");
-
-                // Set up the input
-                final EditText input = new EditText(PlayScreen.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-                builder.setView(input);
-
-                // Set up the buttons
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        username = input.getText().toString();
-                        //send to highscores screen
-                        saveScore(score, username);
-                        dialog.cancel();
-                        finish();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
+                for(int i=0; i<checked.length; i++){
+                    checked[i]=true;
+                }
+                checkScore();
             }
         });
 
@@ -154,6 +131,47 @@ public class PlayScreen extends AppCompatActivity {
         });
 
 
+    }
+
+    //TODO: Checks if player's score is a new high score
+    private void checkScore(){
+        //if new high score
+        if(true)
+            newHighScoreInput();
+
+    }
+
+    //Saves player's new high score
+    private void newHighScoreInput(){
+        //Prompt user to enter a name
+        AlertDialog.Builder builder = new AlertDialog.Builder(PlayScreen.this);
+        builder.setTitle("New Score! Please enter a name!");
+
+        // Set up the input
+        final EditText input = new EditText(PlayScreen.this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                username = input.getText().toString();
+                //send to highscores screen
+                saveScore(score, username);
+                dialog.cancel();
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     //Creates buttons/Cards based on the difficulty
@@ -348,6 +366,12 @@ public class PlayScreen extends AppCompatActivity {
                             button.setTextColor(Color.WHITE);
                             button.setEnabled(false);
                             addScore(2);
+
+                            //checks if all matches made
+                            totalMatches+=2;
+                            if(totalMatches == difficulty)
+                                checkScore();
+
                             incorrectPair = new Button[2];
                             //Log.d("Correct Card Tag: ", "" + button.getTag());
                             checked[find(cards, (Integer)button.getTag())] = true;

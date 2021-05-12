@@ -122,6 +122,7 @@ public class HighScoresScreen extends AppCompatActivity {
         //Debug message to make sure everything appears correctly.
         Log.d("scores-info", scoreOne + ", " + scoreTwo + ", " + scoreThree);
 
+        //Loads top 3 scores to the high scores page
         TextView scoreOneText = findViewById(R.id.scoreOne);
         scoreOneText.setText(scoreOne);
         TextView scoreTwoText = findViewById(R.id.scoreTwo);
