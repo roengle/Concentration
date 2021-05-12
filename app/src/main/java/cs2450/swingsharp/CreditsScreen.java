@@ -14,7 +14,7 @@ public class CreditsScreen extends AppCompatActivity {
         setContentView(R.layout.credits_screen);
 
         //Back Button code (Return to main screen)
-        Button backButton = findViewById(R.id.backButton);
+        Button backButton = findViewById(R.id.backButton2);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

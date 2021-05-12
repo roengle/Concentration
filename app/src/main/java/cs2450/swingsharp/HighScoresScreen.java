@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,9 @@ public class HighScoresScreen extends AppCompatActivity {
             //Set our difficulty
             this.difficulty = extras.getInt("difficulty");
         }
+        TextView difficultyDebugText = findViewById(R.id.currentDifficultyText2);
+        difficultyDebugText.setText("Difficulty: " + difficulty + " Cards");            //set difficulty text
+
         //Set the top three scorers
         setTopScores();
     }
@@ -117,6 +121,13 @@ public class HighScoresScreen extends AppCompatActivity {
         }
         //Debug message to make sure everything appears correctly.
         Log.d("scores-info", scoreOne + ", " + scoreTwo + ", " + scoreThree);
+
+        TextView scoreOneText = findViewById(R.id.scoreOne);
+        scoreOneText.setText(scoreOne);
+        TextView scoreTwoText = findViewById(R.id.scoreTwo);
+        scoreTwoText.setText(scoreTwo);
+        TextView scoreThreeText = findViewById(R.id.scoreThree);
+        scoreThreeText.setText(scoreThree);
 
     }
 }
