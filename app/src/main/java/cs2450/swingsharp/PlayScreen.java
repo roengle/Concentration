@@ -47,6 +47,8 @@ public class PlayScreen extends AppCompatActivity {
     String username = "";
     int difficulty;
     Button[] cards;
+    boolean[] checked = new boolean[20];
+    String[] cardNames = new String[20];
     Button[] incorrectPair = new Button[2];
 
     @Override
@@ -55,6 +57,33 @@ public class PlayScreen extends AppCompatActivity {
         setContentView(R.layout.play_screen);
 
         cards = createCards();
+
+        if(savedInstanceState != null){
+            score = savedInstanceState.getInt("score");
+            TextView scoreText = findViewById(R.id.scoreText);
+            scoreText.setText("Score: " + score);
+            lastCard = savedInstanceState.getString("lastCard");
+            wrongPair = savedInstanceState.getBoolean("wrongPair");
+            secondCard = savedInstanceState.getBoolean("secondCard");
+
+            checked = savedInstanceState.getBooleanArray("checked");
+            cardNames = savedInstanceState.getStringArray("cardNames");
+            for(int i = 0; i < cards.length; i++){
+                if(checked[i] == true)
+                    cards[i].setTextColor(Color.WHITE);
+                else
+                    cards[i].setTextColor(Color.TRANSPARENT);
+                cards[i].setText(cardNames[i]);
+                Log.d("cardNames: ", "" + cardNames[i]);
+            }
+            /*if(incorrectPair[0] != null){
+                incorrectPair[0] = cards[find(cards, savedInstanceState.getInt("incorrectPair1"))];
+                incorrectPair[1] = cards[find(cards, savedInstanceState.getInt("incorrectPair2"))];
+            }
+            
+             */
+        }
+
 
         //New Game Button code (Return to main screen)
         Button newGameButton = findViewById(R.id.newGameButton);
@@ -114,6 +143,7 @@ public class PlayScreen extends AppCompatActivity {
                 if(wrongPair) {
                     for (Button button : incorrectPair) {
                         button.setTextColor(Color.TRANSPARENT);
+                        checked[find(cards, (Integer)button.getTag())] = false;
                     }
                     for (Button button : cards) {
                         button.setEnabled(true);
@@ -183,6 +213,9 @@ public class PlayScreen extends AppCompatActivity {
         }
         //Creates an X amount of cards based on the array of words (max of 5rows x 4col)
         Button[] cards = new Button[difficulty];
+        for(int i = 0; i < checked.length; i++){
+            checked[i] = false;
+        }
         for(int i = 1; i <= difficulty; i++){
             //First row
             if(i >= row1_start && i <= row1_end) {
@@ -195,11 +228,13 @@ public class PlayScreen extends AppCompatActivity {
                 }
 
                 button.setText(word);
+                button.setTag(i);
                 //button.setHeight(button_height);
                 //button.setWidth(button_width);
                 //button.setBackgroundResource(R.drawable.hmm);
 
                 cards[i-1] = button;
+                cardNames[i-1] = word;
                 createCardOnClick(button);
                 tablerow1.addView(button, tlp);
             }
@@ -213,9 +248,11 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+                button.setTag(i);
                // button.setHeight(button_height);
                 //button.setWidth(button_width);
                 cards[i-1] = button;
+                cardNames[i-1] = word;
                 createCardOnClick(button);
                 tablerow2.addView(button, tlp);
             }
@@ -229,9 +266,11 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+                button.setTag(i);
               //  button.setHeight(button_height);
               //  button.setWidth(button_width);
                 cards[i-1] = button;
+                cardNames[i-1] = word;
                 createCardOnClick(button);
                 tablerow3.addView(button, tlp);
             }
@@ -245,9 +284,11 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+                button.setTag(i);
              //   button.setHeight(button_height);
              //   button.setWidth(button_width);
                 cards[i-1] = button;
+                cardNames[i-1] = word;
                 createCardOnClick(button);
                 tablerow4.addView(button, tlp);
             }
@@ -261,9 +302,11 @@ public class PlayScreen extends AppCompatActivity {
                     chosenWords[tempNum] = null;
                 }
                 button.setText(word);
+                button.setTag(i);
               //  button.setHeight(button_height);
               //  button.setWidth(button_width);
                 cards[i-1] = button;
+                cardNames[i-1] = word;
                 createCardOnClick(button);
                 tablerow5.addView(button, tlp);
             }
@@ -297,12 +340,17 @@ public class PlayScreen extends AppCompatActivity {
                         button.setEnabled(false);
                         secondCard = true;
                         incorrectPair[0] = button;
+                        //Log.d("First Card Tag: ", "" + button.getTag());
+                        checked[find(cards, (Integer)button.getTag())] = true;
+
                     } else {
                         if (button.getText().toString().equals(lastCard)) {
                             button.setTextColor(Color.WHITE);
                             button.setEnabled(false);
                             addScore(2);
                             incorrectPair = new Button[2];
+                            //Log.d("Correct Card Tag: ", "" + button.getTag());
+                            checked[find(cards, (Integer)button.getTag())] = true;
                         } else {
                             button.setTextColor(Color.WHITE);
                             for (int j = 0; j < cards.length; j++) {
@@ -311,6 +359,8 @@ public class PlayScreen extends AppCompatActivity {
                             addScore(-1);
                             incorrectPair[1] = button;
                             wrongPair = true;
+                            //Log.d("Wrong Card Tag: ", "" + button.getTag());
+                            checked[find(cards, (Integer)button.getTag())] = true;
                         }
                         secondCard = false;
                     }
@@ -319,6 +369,19 @@ public class PlayScreen extends AppCompatActivity {
             }
         });
         button.setTextColor(Color.TRANSPARENT);
+    }
+
+    //gets the index of a button based on its Tag (ID doesn't work)
+    private int find(Button[] a, int tag)
+    {
+        for (int i = 0; i < a.length; i++)
+        {
+            if (tag == (Integer) a[i].getTag()) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
 
@@ -428,5 +491,25 @@ public class PlayScreen extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putStringArray("cardNames", cardNames);
+        outState.putBooleanArray("checked", checked);
+        outState.putInt("score", score);
+        outState.putString("lastCard", lastCard);
+        outState.putBoolean("secondCard", secondCard);
+        outState.putBoolean("wrongPair", wrongPair);
+
+        if(incorrectPair[0] != null) {
+            int incorrectPair1 = (Integer) incorrectPair[0].getTag();
+            outState.putInt("incorrectPair1", incorrectPair1);
+        }
+        if(incorrectPair[1] != null) {
+            int incorrectPair2 = (Integer) incorrectPair[1].getTag();
+            outState.putInt("incorrectPair2", incorrectPair2);
+        }
+        super.onSaveInstanceState(outState);
     }
 }
