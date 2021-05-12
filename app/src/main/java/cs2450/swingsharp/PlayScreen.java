@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -182,19 +183,24 @@ public class PlayScreen extends AppCompatActivity {
         //Sort the list by values(since it implements Comparable, it can be sorted)
         Collections.sort(nameScorePairs);
 
+        //Determine if a new high score entry needs to be made. If not, finish.
         if(nameScorePairs.size() == 1 || nameScorePairs.size() == 2 || nameScorePairs.size() == 0){
+            Log.d("new-high-score", "New high score detected due to lack of previous scores.");
             newHighScoreInput();
         }
-        else if(nameScorePairs.size() >= 3) {
-            if(score>nameScorePairs.get(0).getScore() || score>nameScorePairs.get(1).getScore() || score>nameScorePairs.get(2).getScore() )
-                newHighScoreInput();
+        else if(nameScorePairs.size() >= 3 && (score>nameScorePairs.get(0).getScore() || score>nameScorePairs.get(1).getScore() || score>nameScorePairs.get(2).getScore())) {
+            Log.d("new-high-score", "New high score detected due to score being higher than one of top three.");
+            newHighScoreInput();
+        }else{
+            Log.d("no-new-high-score", "No new high score, attemping to return to main menu");
+            //If no new high score, return to main menu.
+            finish();
         }
-
-
     }
 
     //Saves player's new high score
     private void newHighScoreInput(){
+        Log.v("new-high-score", "New high score: " + username + "-" + score);
         //Prompt user to enter a name
         AlertDialog.Builder builder = new AlertDialog.Builder(PlayScreen.this);
         builder.setTitle("New Score! Please enter a name!");
@@ -496,23 +502,21 @@ public class PlayScreen extends AppCompatActivity {
             //Template JSON text which contains all the fields we need, which can accept new scores
             String baseText = "{\"4-scores\":[],\"6-scores\":[],\"8-scores\":[],\"10-scores\":[]," +
                     "\"12-scores\":[],\"14-scores\":[],\"16-scores\":[],\"18-scores\":[],\"20-scores\":[]}";
+
             try {
-                //Open the file output stream
                 fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-                //Write to the file
                 fos.write(baseText.getBytes());
                 //Notify user
-                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_SHORT).show();
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileNotFoundException.printStackTrace();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+                Toast.makeText(this, "Created file " + getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException ex) {
+                e.printStackTrace();
+            } catch (IOException ex) {
+                e.printStackTrace();
             } finally{
                 try {
-                    //Close file output stream
                     fos.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+                } catch (IOException ex) {
+                    e.printStackTrace();
                 }
             }
         } catch (IOException e) {

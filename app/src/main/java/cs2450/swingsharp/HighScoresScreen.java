@@ -7,14 +7,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -76,9 +79,38 @@ public class HighScoresScreen extends AppCompatActivity {
             //File will only contain one line, so read only once.
             input = br.readLine();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //File doesn't exist, create file.
+            Log.d("new-json-file", "File does not exist, creating new file highscores.json with template JSON.");
+            //Create a new file output stream
+            FileOutputStream fos = null;
+            //Template JSON text which contains all the fields we need, which can accept new scores
+            String baseText = "{\"4-scores\":[],\"6-scores\":[],\"8-scores\":[],\"10-scores\":[]," +
+                    "\"12-scores\":[],\"14-scores\":[],\"16-scores\":[],\"18-scores\":[],\"20-scores\":[]}";
+
+            try {
+                fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+                fos.write(baseText.getBytes());
+                //Notify user
+                Toast.makeText(this, "Created file " + getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException ex) {
+                e.printStackTrace();
+            } catch (IOException ex) {
+                e.printStackTrace();
+            } finally{
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    e.printStackTrace();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally{
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         //Initialize JSON array that will contain individual JSON objects representing user-score pairs.
@@ -104,7 +136,12 @@ public class HighScoresScreen extends AppCompatActivity {
         //Sort the list by values(since it implements Comparable, it can be sorted)
         Collections.sort(nameScorePairs);
         //Get values from list based on size of list.
-        if(nameScorePairs.size() == 1){
+        if(nameScorePairs.size() == 0){
+            scoreOne = "";
+            scoreTwo = "";
+            scoreThree = "";
+        }
+        else if(nameScorePairs.size() == 1){
             scoreOne = String.format("%s - %d", nameScorePairs.get(0).getName(), nameScorePairs.get(0).getScore());
             scoreTwo = "";
             scoreThree = "";
