@@ -108,6 +108,7 @@ public class PlayScreen extends AppCompatActivity {
         endGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //If all cards are revealed, exit to menu
                 boolean temp=true;
                 for(int i = 0; i<difficulty; i++){
                     if(checked[i]==false)
@@ -115,7 +116,6 @@ public class PlayScreen extends AppCompatActivity {
                 }
                 if (temp==true)
                     finish();
-
                 //Reveals all cards
                 for(Button button : cards){
                     button.setTextColor(Color.WHITE);
@@ -123,7 +123,6 @@ public class PlayScreen extends AppCompatActivity {
                 for(int i=0; i<checked.length; i++){
                     checked[i]=true;
                 }
-
                 checkScore();
 
             }
@@ -200,6 +199,8 @@ public class PlayScreen extends AppCompatActivity {
         else if(nameScorePairs.size() >= 3 && (score>nameScorePairs.get(0).getScore() || score>nameScorePairs.get(1).getScore() || score>nameScorePairs.get(2).getScore())) {
             Log.d("new-high-score", "New high score detected due to score being higher than one of top three.");
             newHighScoreInput();
+        }else{
+            
         }
     }
 
