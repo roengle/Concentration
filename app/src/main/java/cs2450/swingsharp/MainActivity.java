@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent j = new Intent(getApplicationContext(), HighScoresScreen.class);
+                j.putExtra("difficulty", getDifficulty());
                 startActivity(j); //opens credit screen
             }
         });

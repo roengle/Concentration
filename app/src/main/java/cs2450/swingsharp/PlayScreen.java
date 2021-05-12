@@ -21,6 +21,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -322,39 +323,54 @@ public class PlayScreen extends AppCompatActivity {
 
 
     /**
-     * Saves the score with the associated username
+     * Saves the score with the associated username in highscores.json. If highscores.json does not
+     * exist, a new file is created with template json. The following is an example of how the JSON
+     * file is structured.
+     *
+     * PRECONDITION: Username needs to be set before calling this method.
      *
      * @param score the score the player has
      * @param name the username of the player
      */
     private void saveScore(int score, String name){
+        //Pointer to file name
         final String FILE_NAME = "highscores.json";
+        //Initialize empty stream to read input in
         String input = null;
-        //Parse current JSON to get current scores.
+        //Create new file input stream
         FileInputStream fis = null;
 
         //Read input from json file
         try {
+            //Setup our fileinput stream
             fis = openFileInput(FILE_NAME);
+            //Create a new input stream reader and buffered reader
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
+            //File will only contain one line, so read only once.
             input = br.readLine();
         } catch (FileNotFoundException e) {
             //File doesn't exist, create file.
+            Log.d("new-json-file", "File does not exist, creating new file highscores.json with template JSON.");
+            //Create a new file output stream
             FileOutputStream fos = null;
-            String baseText = "{\"4-scores\":{},\"6-scores\":{},\"8-scores\":{},\"10-scores\":{}," +
-                    "\"12-scores\":{},\"14-scores\":{},\"16-scores\":{},\"18-scores\":{},\"20-scores\":{}}";
+            //Template JSON text which contains all the fields we need, which can accept new scores
+            String baseText = "{\"4-scores\":[],\"6-scores\":[],\"8-scores\":[],\"10-scores\":[]," +
+                    "\"12-scores\":[],\"14-scores\":[],\"16-scores\":[],\"18-scores\":[],\"20-scores\":[]}";
             try {
+                //Open the file output stream
                 fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+                //Write to the file
                 fos.write(baseText.getBytes());
-
-                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
+                //Notify user
+                Toast.makeText(this, "Saved to " + getFilesDir() + "/" + FILE_NAME, Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             } finally{
                 try {
+                    //Close file output stream
                     fos.close();
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -376,31 +392,37 @@ public class PlayScreen extends AppCompatActivity {
         try {
             jsonData = new JSONObject(input);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d("json-error", e.getMessage());
         }
         //Add current score to JSON object
         String query = String.format("%s-scores", this.difficulty);
         try {
-            JSONObject scoreObject = jsonData.getJSONObject(String.format("%s-scores", difficulty));
-            scoreObject.put(username, score);
-            Log.d("new_json_entry", scoreObject.toString());
+            JSONArray scoreArray = jsonData.getJSONArray(String.format("%s-scores", difficulty));
+            JSONObject entry = new JSONObject().put("username", username).put("score", score);
+            scoreArray.put(entry);
+            Log.d("json-insert","Put " + entry.toString() + " into " + difficulty + "-scores.");
+
         } catch (JSONException e) {
-            Log.d("json_exception", e.getMessage());
+            Log.d("json-error", e.getMessage());
         }
         //Write JSON string to file
         FileOutputStream fos = null;
         try {
+            //Create a new output stream
             fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            //Write the single-line JSON output to the file
             fos.write(jsonData.toString().getBytes());
 
+            //Output message to user
             Toast.makeText(this, "Saved to " + getFilesDir() + "/" + FILE_NAME,
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally{
             try {
+                //Close the file output stream
                 fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
